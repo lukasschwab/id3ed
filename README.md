@@ -1,6 +1,8 @@
 # id3ed
 
-Edit ID3 tags as JSON in vim. See [mikkyang/id3-go](https://github.com/mikkyang/id3-go)
+Edit ID3 tags as JSON in vim.
+
+> ID3 is a metadata container most often used in conjunction with the MP3 audio file format. It allows information such as the title, artist, album, track number, and other information about the file to be stored in the file itself. ([Wikipedia](https://en.wikipedia.org/wiki/ID3))
 
 ## Usage
 
