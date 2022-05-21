@@ -31,3 +31,16 @@ Opens an editor for the following metadata:
 Modify them, save the file, then quit the editor.
 
 Accepts [JWCC](https://nigeltao.github.io/blog/2021/json-with-commas-comments.html).
+
+### Scripts
+
+Edit every file in the present working directory that doesn't have a set title.
+
+```bash
+for file in *; do
+    len=$(id3ed --inspect "$file" | jq '.title | length')
+    if [ $len == "0" ]; then
+        id3ed "$file";
+    fi
+done
+```
