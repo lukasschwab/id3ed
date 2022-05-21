@@ -45,6 +45,7 @@ func from(filename string, file *id3.File) *Meta {
 	}
 }
 
+// Close the file metadata, flushing changes.
 func (meta *Meta) Close() {
 	meta.file.Close()
 }
@@ -65,6 +66,7 @@ func (meta *Meta) Write() {
 	maybe(meta.file.Tagger.SetGenre, meta.Genre)
 }
 
+// Format meta as JSON.
 func (meta *Meta) Format() ([]byte, error) {
 	data, err := json.MarshalIndent(meta, "", "\t")
 	if err != nil {
