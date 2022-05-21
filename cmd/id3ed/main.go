@@ -6,43 +6,51 @@ import (
 	"log"
 
 	"github.com/lukasschwab/id3ed/pkg/meta"
-	"github.com/mikkyang/id3-go"
 )
 
-func inspectMetadata(file *id3.File) {
-	data, err := meta.From(file).Format()
+func open(filename string) *meta.Meta {
+	data, err := meta.From(filename)
+	if err != nil {
+		log.Fatalf("Parsing failed: %v", err)
+		return nil
+	}
+	return data
+}
+
+func inspectMetadata(filename string) {
+	metadata := open(filename)
+	defer metadata.Close()
+
+	data, err := metadata.Format()
 	if err != nil {
 		log.Fatalf("Inspection failed: %v", err)
 	}
 	fmt.Printf("%s\n", data)
 }
 
-func editMetadata(file *id3.File) {
-	data := meta.From(file)
-	updated, err := data.SolicitUpdates()
+func editMetadata(filename string) {
+	metadata := open(filename)
+	defer metadata.Close()
+
+	updated, err := metadata.SolicitUpdates()
 	if err != nil {
 		log.Fatalf("Updates failed: %v", err)
 	}
-	updated.Write(file)
+	updated.Write()
 	log.Printf("Updated metadata.")
 }
 
 func main() {
-	inspect := flag.Bool("inspect", false, "print current file metadata")
-	flag.Parse()
-
 	// TODO: take settable fields as named arguments.
+	inspect := flag.Bool("inspect", false, "print current file metadata")
+	_ = flag.Bool("withFilename", true, "include the filename in a JWCC comment")
+
+	flag.Parse()
 	filename := flag.Args()[0]
-	file, err := id3.Open(filename)
-	if err != nil {
-		log.Fatalf("Parsing failed: %v", err)
-	}
-	defer file.Close()
 
 	if *inspect {
-		inspectMetadata(file)
+		inspectMetadata(filename)
 		return
 	}
-
-	editMetadata(file)
+	editMetadata(filename)
 }
