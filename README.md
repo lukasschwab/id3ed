@@ -13,6 +13,7 @@ $ go install ./cmd/id3ed
 ## Usage
 
 ```console
+$ id3ed --help
 $ id3ed ~/Desktop/some-file.mp3
 ```
 
