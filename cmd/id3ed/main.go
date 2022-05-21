@@ -28,11 +28,11 @@ func inspectMetadata(filename string) {
 	fmt.Printf("%s\n", data)
 }
 
-func editMetadata(filename string) {
+func editMetadata(filename string, comment bool) {
 	metadata := open(filename)
 	defer metadata.Close()
 
-	updated, err := metadata.SolicitUpdates()
+	updated, err := metadata.SolicitUpdates(comment)
 	if err != nil {
 		log.Fatalf("Updates failed: %v", err)
 	}
@@ -43,7 +43,7 @@ func editMetadata(filename string) {
 func main() {
 	// TODO: take settable fields as named arguments.
 	inspect := flag.Bool("inspect", false, "print current file metadata")
-	_ = flag.Bool("withFilename", true, "include the filename in a JWCC comment")
+	comment := flag.Bool("comment", true, "include filename in a JWCC comment")
 
 	flag.Parse()
 	filename := flag.Args()[0]
@@ -52,5 +52,5 @@ func main() {
 		inspectMetadata(filename)
 		return
 	}
-	editMetadata(filename)
+	editMetadata(filename, *comment)
 }

@@ -74,13 +74,18 @@ func (meta *Meta) Format() ([]byte, error) {
 }
 
 // SolicitUpdates to meta from the user.
-func (meta *Meta) SolicitUpdates() (*Meta, error) {
+func (meta *Meta) SolicitUpdates(comment bool) (*Meta, error) {
 	initial, err := meta.Format()
 	if err != nil {
 		return nil, err
 	}
 
-	initial = append([]byte(fmt.Sprintf("// File: %s\n", meta.filename)), initial...)
+	if comment {
+		initial = append(
+			[]byte(fmt.Sprintf("// File: %s\n", meta.filename)),
+			initial...,
+		)
+	}
 
 	data, err := editor.GetUpdates(initial)
 	if err != nil {
