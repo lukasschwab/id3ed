@@ -80,6 +80,8 @@ func (meta *Meta) SolicitUpdates() (*Meta, error) {
 		return nil, err
 	}
 
+	initial = append([]byte(fmt.Sprintf("// File: %s\n", meta.filename)), initial...)
+
 	data, err := editor.GetUpdates(initial)
 	if err != nil {
 		return nil, err
