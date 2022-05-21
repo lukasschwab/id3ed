@@ -46,11 +46,19 @@ func (meta *Meta) Write(f *id3.File) {
 	maybe(f.Tagger.SetGenre, meta.Genre)
 }
 
-// SolicitUpdates to meta from the user.
-func (meta *Meta) SolicitUpdates() (*Meta, error) {
-	initial, err := json.MarshalIndent(meta, "", "\t")
+func (meta *Meta) Format() ([]byte, error) {
+	data, err := json.MarshalIndent(meta, "", "\t")
 	if err != nil {
 		return nil, fmt.Errorf("error formatting initial JSON: %w", err)
+	}
+	return data, err
+}
+
+// SolicitUpdates to meta from the user.
+func (meta *Meta) SolicitUpdates() (*Meta, error) {
+	initial, err := meta.Format()
+	if err != nil {
+		return nil, err
 	}
 
 	data, err := editor.GetUpdates(initial)
