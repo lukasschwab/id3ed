@@ -73,8 +73,18 @@ func (meta *Meta) Format() ([]byte, error) {
 	return data, err
 }
 
+// Partial metadata for pre-filling an edit struct.
+type Partial struct {
+	Title  *string
+	Artist *string
+	Album  *string
+	Year   *string
+	Genre  *string
+}
+
 // SolicitUpdates to meta from the user.
-func (meta *Meta) SolicitUpdates(comment bool) (*Meta, error) {
+func (meta *Meta) SolicitUpdates(partial *Partial, comment bool) (*Meta, error) {
+	meta.apply(partial)
 	initial, err := meta.Format()
 	if err != nil {
 		return nil, err
@@ -104,4 +114,29 @@ func (meta *Meta) SolicitUpdates(comment bool) (*Meta, error) {
 		return nil, fmt.Errorf("error parsing user input: %w", err)
 	}
 	return updated, nil
+}
+
+func (meta *Meta) apply(partial *Partial) {
+	if partial == nil {
+		return
+	}
+
+	isSet := func(s *string) bool {
+		return s != nil && *s != ""
+	}
+	if isSet(partial.Title) {
+		meta.Title = *partial.Title
+	}
+	if isSet(partial.Artist) {
+		meta.Artist = *partial.Artist
+	}
+	if isSet(partial.Album) {
+		meta.Album = *partial.Album
+	}
+	if isSet(partial.Year) {
+		meta.Year = *partial.Year
+	}
+	if isSet(partial.Genre) {
+		meta.Genre = *partial.Genre
+	}
 }
