@@ -32,58 +32,6 @@ func From(filename string) (*Meta, error) {
 	return from(filename, file), nil
 }
 
-// From the existing ID3 tags on f, constructs a new Meta.
-func from(filename string, file *id3.File) *Meta {
-	return &Meta{
-		filename: filename,
-		file:     file,
-		Title:    file.Tagger.Title(),
-		Artist:   file.Tagger.Artist(),
-		Album:    file.Tagger.Album(),
-		Year:     file.Tagger.Year(),
-		Genre:    file.Tagger.Genre(),
-	}
-}
-
-// Close the file metadata, flushing changes.
-func (meta *Meta) Close() {
-	meta.file.Close()
-}
-
-// Write meta fields to f.Tagger.
-func (meta *Meta) Write() {
-	// TODO: make it possible to clear fields. Distinguish between {"title": ""}
-	// and {} (an update without the "title" field).
-	maybe := func(set func(string), value string) {
-		if value != "" {
-			set(value)
-		}
-	}
-	maybe(meta.file.Tagger.SetTitle, meta.Title)
-	maybe(meta.file.Tagger.SetArtist, meta.Artist)
-	maybe(meta.file.Tagger.SetAlbum, meta.Album)
-	maybe(meta.file.Tagger.SetYear, meta.Year)
-	maybe(meta.file.Tagger.SetGenre, meta.Genre)
-}
-
-// Format meta as JSON.
-func (meta *Meta) Format() ([]byte, error) {
-	data, err := json.MarshalIndent(meta, "", "\t")
-	if err != nil {
-		return nil, fmt.Errorf("error formatting initial JSON: %w", err)
-	}
-	return data, err
-}
-
-// Partial metadata for pre-filling an edit struct.
-type Partial struct {
-	Title  *string
-	Artist *string
-	Album  *string
-	Year   *string
-	Genre  *string
-}
-
 // SolicitUpdates to meta from the user.
 func (meta *Meta) SolicitUpdates(partial *Partial, comment bool) (*Meta, error) {
 	meta.apply(partial)
@@ -118,13 +66,26 @@ func (meta *Meta) SolicitUpdates(partial *Partial, comment bool) (*Meta, error) 
 	return updated, nil
 }
 
+// From the existing ID3 tags on f, constructs a new Meta.
+func from(filename string, file *id3.File) *Meta {
+	return &Meta{
+		filename: filename,
+		file:     file,
+		Title:    file.Tagger.Title(),
+		Artist:   file.Tagger.Artist(),
+		Album:    file.Tagger.Album(),
+		Year:     file.Tagger.Year(),
+		Genre:    file.Tagger.Genre(),
+	}
+}
+
+func isSet(s *string) bool {
+	return s != nil && *s != ""
+}
+
 func (meta *Meta) apply(partial *Partial) {
 	if partial == nil {
 		return
-	}
-
-	isSet := func(s *string) bool {
-		return s != nil && *s != ""
 	}
 	if isSet(partial.Title) {
 		meta.Title = *partial.Title
@@ -140,5 +101,65 @@ func (meta *Meta) apply(partial *Partial) {
 	}
 	if isSet(partial.Genre) {
 		meta.Genre = *partial.Genre
+	}
+}
+
+// Write meta fields to f.Tagger.
+func (meta *Meta) Write() {
+	// TODO: make it possible to clear fields. Distinguish between {"title": ""}
+	// and {} (an update without the "title" field).
+	maybe := func(set func(string), value string) {
+		if value != "" {
+			set(value)
+		}
+	}
+	maybe(meta.file.Tagger.SetTitle, meta.Title)
+	maybe(meta.file.Tagger.SetArtist, meta.Artist)
+	maybe(meta.file.Tagger.SetAlbum, meta.Album)
+	maybe(meta.file.Tagger.SetYear, meta.Year)
+	maybe(meta.file.Tagger.SetGenre, meta.Genre)
+}
+
+// Format meta as JSON.
+func (meta *Meta) Format() ([]byte, error) {
+	data, err := json.MarshalIndent(meta, "", "\t")
+	if err != nil {
+		return nil, fmt.Errorf("error formatting initial JSON: %w", err)
+	}
+	return data, err
+}
+
+// Close the file metadata, flushing changes.
+func (meta *Meta) Close() {
+	meta.file.Close()
+}
+
+// Partial metadata for pre-filling an edit struct.
+type Partial struct {
+	Title  *string
+	Artist *string
+	Album  *string
+	Year   *string
+	Genre  *string
+}
+
+func (p *Partial) Mask(other *Partial) {
+	if other == nil {
+		return
+	}
+	if !isSet(p.Title) {
+		p.Title = other.Title
+	}
+	if !isSet(p.Artist) {
+		p.Artist = other.Artist
+	}
+	if !isSet(p.Album) {
+		p.Album = other.Album
+	}
+	if !isSet(p.Year) {
+		p.Year = other.Year
+	}
+	if !isSet(p.Genre) {
+		p.Genre = other.Genre
 	}
 }

@@ -1,6 +1,12 @@
 github.com/djimenez/iconv-go v0.0.0-20160305225143-8960e66bd3da h1:0qwwqQCLOOXPl58ljnq3sTJR7yRuMolM02vjxDh4ZVE=
 github.com/djimenez/iconv-go v0.0.0-20160305225143-8960e66bd3da/go.mod h1:ns+zIWBBchgfRdxNgIJWn2x6U95LQchxeqiN5Cgdgts=
+github.com/google/go-cmp v0.5.6/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+github.com/google/go-cmp v0.5.8 h1:e6P7q2lk1O+qJJb4BtCQXlK8vWEO8V1ZeuEdJNOqZyg=
+github.com/google/go-cmp v0.5.8/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
+github.com/irlndts/go-discogs v0.3.5 h1:tVx1kLlrWMN7OfwTZ8OCCWQIICdyklBC0ojn5QJZwDY=
+github.com/irlndts/go-discogs v0.3.5/go.mod h1:UVQ05FdCzH4P/usnSxQDh77QYE37HvmPnSCgogioljo=
 github.com/mikkyang/id3-go v0.0.0-20191012064224-2c6ab3bb1fbd h1:Cqivkwpk34qJJsi0xbZp2TOhpMsG381iaum8mb+6T/s=
 github.com/mikkyang/id3-go v0.0.0-20191012064224-2c6ab3bb1fbd/go.mod h1:6ReX25kzt2D67Dt9vH3kTm8R4luFEfW9W3RDuytp0IA=
 github.com/tailscale/hujson v0.0.0-20220506213045-af5ed07155e5 h1:erxeiTyq+nw4Cz5+hLDkOwNF5/9IQWCQPv0gpb3+QHU=
 github.com/tailscale/hujson v0.0.0-20220506213045-af5ed07155e5/go.mod h1:DFSS3NAGHthKo1gTlmEcSBiZrRJXi28rLNd/1udP1c8=
+golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
